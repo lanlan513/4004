@@ -1,0 +1,17 @@
+{
+  "name": "jurassic-park-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "侏罗纪恐龙管理与观光系统 - React + Express + Tailwind CSS",
+  "scripts": {
+    "install:all": "npm install --prefix client && npm install --prefix server",
+    "dev": "concurrently -n client,server -c green,yellow \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "build": "npm run build --prefix client",
+    "start": "npm run start --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

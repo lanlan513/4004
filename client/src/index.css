@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-jungle-950 font-sans text-bone antialiased;
+  }
+
+  ::selection {
+    @apply bg-amber text-jungle-950;
+  }
+
+  /* 深色滚动条 */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #04090a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1a3c2b;
+    border-radius: 6px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #e0a526;
+  }
+}
+
+@layer utilities {
+  /* 胶片颗粒噪点覆盖层，营造暗夜丛林质感 */
+  .grain-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.22;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* 标题文字的暗夜辉光 */
+  .text-glow {
+    text-shadow:
+      0 0 30px rgba(224, 165, 38, 0.35),
+      0 2px 12px rgba(0, 0, 0, 0.8);
+  }
+}
