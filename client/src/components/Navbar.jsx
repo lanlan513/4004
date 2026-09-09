@@ -60,25 +60,26 @@ export default function Navbar() {
         <ul className="hidden items-center gap-9 md:flex">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
-              <a
-                href={link.href}
+              <Link
+                to={link.href}
+                onClick={() => setMenuOpen(false)}
                 className="group relative font-serif text-sm tracking-widest text-bone/75 transition-colors hover:text-amber"
               >
                 {link.label}
                 <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-amber transition-all duration-300 group-hover:w-full" />
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
 
         {/* 预约按钮 */}
-        <button
-          type="button"
+        <Link
+          to="/tickets"
           className="hidden items-center gap-2 border border-amber/60 px-5 py-2 font-serif text-sm tracking-widest text-amber transition-all duration-300 hover:bg-amber hover:text-jungle-950 hover:shadow-[0_0_24px_rgba(224,165,38,0.45)] md:inline-flex"
         >
           <Ticket className="h-4 w-4" />
           预约探险
-        </button>
+        </Link>
 
         {/* 移动端菜单按钮 */}
         <button
@@ -93,30 +94,31 @@ export default function Navbar() {
 
       {/* 移动端下拉菜单 */}
       <div
-        className={`overflow-hidden transition-all duration-400 md:hidden ${
+        className={`overflow-hidden transition-all duration-300 md:hidden ${
           menuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
         <ul className="space-y-1 px-6 pb-6">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
-              <a
-                href={link.href}
+              <Link
+                to={link.href}
                 onClick={() => setMenuOpen(false)}
                 className="block border-l-2 border-amber/30 py-3 pl-4 font-serif tracking-widest text-bone/80 transition-colors hover:border-amber hover:bg-jungle-800/60 hover:text-amber"
               >
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
           <li className="pt-2">
-            <button
-              type="button"
+            <Link
+              to="/tickets"
+              onClick={() => setMenuOpen(false)}
               className="flex w-full items-center justify-center gap-2 bg-amber px-5 py-3 font-serif tracking-widest text-jungle-950"
             >
               <Ticket className="h-4 w-4" />
               预约探险
-            </button>
+            </Link>
           </li>
         </ul>
       </div>

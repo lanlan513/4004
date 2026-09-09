@@ -15,6 +15,11 @@
     @apply bg-amber text-jungle-950;
   }
 
+  :focus-visible {
+    outline: 2px solid #f5c95c;
+    outline-offset: 4px;
+  }
+
   /* 深色滚动条 */
   ::-webkit-scrollbar {
     width: 10px;

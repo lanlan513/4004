@@ -37,6 +37,15 @@ app.get('/api/dinosaurs', (_req, res) => {
 // 恐龙详情
 app.get('/api/dinosaurs/:id', (req, res) => {
   const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({
+      code: 400,
+      message: '恐龙编号必须为正整数',
+      data: null,
+    });
+  }
+
   const dino = dinosaurs.find((d) => d.id === id);
 
   if (!dino) {

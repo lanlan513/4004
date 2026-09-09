@@ -1,7 +1,12 @@
 import { MapPin, Phone, Mail, Youtube, Instagram, Twitter } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const SERVICE_LINKS = ['门票预订', '观光路线', '恐龙图鉴', '餐饮住宿', '纪念品商店'];
-const ADMIN_LINKS = ['恐龙档案管理', '健康监测中心', '安防调度台', '员工入口'];
+const SERVICE_LINKS = [
+  { label: '门票预订', href: '/tickets' },
+  { label: '观光路线', href: '/tours' },
+  { label: '恐龙图鉴', href: '/dinosaurs' },
+];
+const ADMIN_LINKS = [{ label: '恐龙档案管理', href: '/admin' }];
 
 function ClawMark({ className = '' }) {
   return (
@@ -38,12 +43,18 @@ export default function Footer() {
               致力于复活史前生物并打造全球最震撼的生态观光目的地。
             </p>
             <div className="mt-6 flex gap-4">
-              {[Youtube, Instagram, Twitter].map((Icon, i) => (
+              {[
+                { Icon: Youtube, label: 'YouTube' },
+                { Icon: Instagram, label: 'Instagram' },
+                { Icon: Twitter, label: 'Twitter' },
+              ].map(({ Icon, label }) => (
                 <a
-                  key={i}
-                  href="#"
+                  key={label}
+                  href={`https://www.${label.toLowerCase()}.com/`}
+                  target="_blank"
+                  rel="noreferrer"
                   className="flex h-10 w-10 items-center justify-center border border-bone/20 text-bone/60 transition-all duration-300 hover:border-amber hover:text-amber"
-                  aria-label="社交媒体"
+                  aria-label={`访问 ${label}`}
                 >
                   <Icon className="h-4 w-4" />
                 </a>
@@ -56,13 +67,13 @@ export default function Footer() {
             <h3 className="font-serif text-base font-bold tracking-[0.3em] text-amber">观光服务</h3>
             <ul className="mt-5 space-y-3">
               {SERVICE_LINKS.map((item) => (
-                <li key={item}>
-                  <a
-                    href="#"
+                <li key={item.href}>
+                  <Link
+                    to={item.href}
                     className="font-serif text-sm text-bone/60 transition-colors hover:text-amber"
                   >
-                    {item}
-                  </a>
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -73,13 +84,13 @@ export default function Footer() {
             <h3 className="font-serif text-base font-bold tracking-[0.3em] text-amber">园区管理</h3>
             <ul className="mt-5 space-y-3">
               {ADMIN_LINKS.map((item) => (
-                <li key={item}>
-                  <a
-                    href="#"
+                <li key={item.href}>
+                  <Link
+                    to={item.href}
                     className="font-serif text-sm text-bone/60 transition-colors hover:text-amber"
                   >
-                    {item}
-                  </a>
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
