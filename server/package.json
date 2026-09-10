@@ -6,8 +6,9 @@
   "description": "侏罗纪恐龙管理与观光系统 - Express API 服务",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "nodemon --exec \"node --env-file-if-exists=../.env\" index.js",
+    "start": "node index.js",
+    "test": "node --test test/"
   },
   "dependencies": {
     "cors": "^2.8.5",

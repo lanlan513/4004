@@ -6,7 +6,10 @@ const SERVICE_LINKS = [
   { label: '观光路线', href: '/tours' },
   { label: '恐龙图鉴', href: '/dinosaurs' },
 ];
-const ADMIN_LINKS = [{ label: '恐龙档案管理', href: '/admin' }];
+const ADMIN_LINKS = [
+  { label: '园区 GIS 地图', href: '/map' },
+  { label: '恐龙档案管理', href: '/admin' },
+];
 
 function ClawMark({ className = '' }) {
   return (

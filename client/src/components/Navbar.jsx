@@ -6,6 +6,7 @@ const NAV_LINKS = [
   { label: '首页', href: '/' },
   { label: '恐龙图鉴', href: '/dinosaurs' },
   { label: '观光路线', href: '/tours' },
+  { label: '园区地图', href: '/map' },
   { label: '票务中心', href: '/tickets' },
   { label: '管理后台', href: '/admin' },
 ];

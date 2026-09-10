@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dinosaurs from './data/dinosaurs.js';
+import parkRouter from './routes/park.js';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+// 端口优先级：环境变量 API_PORT（根目录 .env）> PORT > 默认 5000
+const PORT = process.env.API_PORT || process.env.PORT || 5000;
 
 // 中间件
 app.use(cors());
@@ -23,6 +25,9 @@ app.get('/api/health', (_req, res) => {
     time: new Date().toISOString(),
   });
 });
+
+// 园区 GIS 地图与实时追踪
+app.use('/api/park', parkRouter);
 
 // 恐龙列表
 app.get('/api/dinosaurs', (_req, res) => {
