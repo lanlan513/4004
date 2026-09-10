@@ -90,7 +90,7 @@ export default function SecurityGauge() {
         <p className="mt-3 text-center font-serif text-xs leading-relaxed text-bone/55">
           {levelMeta.desc}
         </p>
-        {level === 'NORMAL' && (
+        {levelMeta.key === 'NORMAL' && (
           <p className="mt-1 font-serif text-[11px] text-bone/40">指数越高园区越安全</p>
         )}
       </div>
