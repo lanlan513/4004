@@ -16,9 +16,8 @@ const VALIDATORS = {
   idNumber: (v) => (/^\d{17}[\dXx]$/.test(v) ? '' : '请填写有效的 18 位身份证号'),
 };
 
-export default function VisitorForm({ value, onChange, serverErrors }) {
+export default function VisitorForm({ value, onChange, agreed, onAgreeChange, serverErrors }) {
   const [touched, setTouched] = useState({});
-  const [agreed, setAgreed] = useState(false);
 
   const errors = {};
   for (const key of Object.keys(VALIDATORS)) {
@@ -63,10 +62,7 @@ export default function VisitorForm({ value, onChange, serverErrors }) {
         <input
           type="checkbox"
           checked={agreed}
-          onChange={(e) => {
-            setAgreed(e.target.checked);
-            onChange({ ...value, __agreed: e.target.checked });
-          }}
+          onChange={(e) => onAgreeChange(e.target.checked)}
           className="mt-0.5 h-4 w-4 shrink-0 accent-amber"
         />
         <span className="font-serif text-xs leading-relaxed text-bone/55">
@@ -78,13 +74,13 @@ export default function VisitorForm({ value, onChange, serverErrors }) {
   );
 }
 
-// 供父组件在提交前做整体校验
-export function validateVisitor(value) {
+// 供父组件在提交前做整体校验；agreed 与复选框共用同一状态源
+export function validateVisitor(value, agreed) {
   const errors = {};
   for (const key of Object.keys(VALIDATORS)) {
     const msg = VALIDATORS[key](value[key] || '');
     if (msg) errors[key] = msg;
   }
-  if (!value.__agreed) errors.__agreed = '请先阅读并同意安全协议';
+  if (!agreed) errors.__agreed = '请先阅读并同意安全协议';
   return errors;
 }

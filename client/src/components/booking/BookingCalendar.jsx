@@ -8,12 +8,16 @@ function monthStrOf(date) {
 }
 
 // 入园日期选择日历：按月拉取余票，过去/超窗日期置灰，售罄高亮
-export default function BookingCalendar({ selectedDate, onSelect }) {
+// 余票数量跟随当前票种：普通票看全园配额，VIP 票看 VIP 每日限量
+export default function BookingCalendar({ selectedDate, onSelect, ticketType }) {
   const todayMonth = useMemo(() => monthStrOf(new Date()), []);
   const [month, setMonth] = useState(todayMonth);
   const [calendar, setCalendar] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  // 当前票种在某日的余票
+  const remainingOf = (day) => (ticketType === 'vip' ? day.vipRemaining : day.remaining);
 
   useEffect(() => {
     let cancelled = false;
@@ -69,6 +73,16 @@ export default function BookingCalendar({ selectedDate, onSelect }) {
     return cells;
   }, [calendar, month]);
 
+  // 切换票种或日历刷新后，若已选日期对当前票种已售罄，则清除选择
+  useEffect(() => {
+    if (!selectedDate || !calendar) return;
+    const day = calendar.days.find((d) => d.date === selectedDate);
+    if (day && day.status !== 'closed' && remainingOf(day) <= 0) {
+      onSelect('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ticketType, calendar, selectedDate, onSelect]);
+
   return (
     <div className="border border-bone/10 bg-jungle-900/70 p-6">
       <div className="flex items-center justify-between">
@@ -113,7 +127,9 @@ export default function BookingCalendar({ selectedDate, onSelect }) {
             if (!day) return <span key={`empty-${idx}`} />;
             const dayNum = Number(day.date.slice(-2));
             const closed = day.status === 'closed';
-            const soldout = day.status === 'soldout';
+            const remaining = remainingOf(day);
+            // 当前票种在该日已无余票（VIP 余票为 0 时同样视为售罄）
+            const soldout = !closed && remaining <= 0;
             const selected = selectedDate === day.date;
             const isToday = calendar.today === day.date;
             return (
@@ -128,16 +144,20 @@ export default function BookingCalendar({ selectedDate, onSelect }) {
                     : closed
                       ? 'border-transparent text-bone/20'
                       : soldout
-                        ? 'border-transparent text-bone/25 line-through'
+                        ? 'border-transparent text-bone/25'
                         : 'border-bone/10 text-bone/80 hover:border-amber/60 hover:text-amber'
                 }`}
               >
-                <span className={`text-sm ${isToday ? 'font-bold underline decoration-amber underline-offset-4' : ''}`}>
+                <span
+                  className={`text-sm ${isToday ? 'font-bold underline decoration-amber underline-offset-4' : ''} ${
+                    soldout && ticketType !== 'vip' ? 'line-through' : ''
+                  }`}
+                >
                   {dayNum}
                 </span>
                 {!closed && (
-                  <span className={`mt-0.5 text-[10px] leading-none ${soldout ? 'text-red-400/70 no-underline' : 'text-bone/40'}`}>
-                    {soldout ? '售罄' : `余 ${day.remaining}`}
+                  <span className={`mt-0.5 text-[10px] leading-none ${soldout ? 'text-red-400/70' : 'text-bone/40'}`}>
+                    {soldout ? (ticketType === 'vip' ? 'VIP 售罄' : '售罄') : `余 ${remaining}`}
                   </span>
                 )}
               </button>
@@ -147,7 +167,10 @@ export default function BookingCalendar({ selectedDate, onSelect }) {
       )}
 
       <p className="mt-4 border-t border-bone/10 pt-3 font-serif text-xs leading-relaxed text-bone/40">
-        每日全园限量 3,000 人，VIP 探险票每日限量 300 张。最多可提前 60 天预约。
+        {ticketType === 'vip'
+          ? '当前显示 VIP 探险票余票（每日限量 300 张）。'
+          : '当前显示全园每日余票（限量 3,000 人）。'}
+        最多可提前 60 天预约。
       </p>
     </div>
   );

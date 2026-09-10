@@ -87,6 +87,8 @@ export default function Tickets() {
   const [quantity, setQuantity] = useState(2);
   const [visitDate, setVisitDate] = useState('');
   const [visitor, setVisitor] = useState({ name: '', phone: '', email: '', idNumber: '' });
+  // 安全协议勾选状态的唯一来源：复选框显示、提交按钮禁用与 validateVisitor 校验都读取它
+  const [agreed, setAgreed] = useState(false);
   const [order, setOrder] = useState(null);
   const [paidOrder, setPaidOrder] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -107,7 +109,7 @@ export default function Tickets() {
 
   // 步骤 2 → 3：创建订单
   const submitOrder = async () => {
-    const errors = validateVisitor(visitor);
+    const errors = validateVisitor(visitor, agreed);
     if (Object.keys(errors).length > 0) {
       setFormError(errors.__agreed || '请检查并补全游客信息');
       setServerErrors(errors);
@@ -153,6 +155,8 @@ export default function Tickets() {
     setOrder(null);
     setPaidOrder(null);
     setVisitDate('');
+    setVisitor({ name: '', phone: '', email: '', idNumber: '' });
+    setAgreed(false);
     setFormError('');
     setServerErrors(null);
   };
@@ -172,7 +176,7 @@ export default function Tickets() {
           <div>
             {step === 1 && (
               <div className="space-y-6">
-                <BookingCalendar selectedDate={visitDate} onSelect={setVisitDate} />
+                <BookingCalendar selectedDate={visitDate} onSelect={setVisitDate} ticketType={ticketType} />
                 <TicketTypeSelector
                   types={ticketTypes}
                   selected={ticketType}
@@ -197,7 +201,13 @@ export default function Tickets() {
 
             {step === 2 && (
               <div className="space-y-6">
-                <VisitorForm value={visitor} onChange={setVisitor} serverErrors={serverErrors} />
+                <VisitorForm
+                  value={visitor}
+                  onChange={setVisitor}
+                  agreed={agreed}
+                  onAgreeChange={setAgreed}
+                  serverErrors={serverErrors}
+                />
                 {formError && (
                   <p className="flex items-center gap-2 border border-red-500/40 bg-red-500/10 px-4 py-3 font-serif text-sm text-red-400">
                     <AlertTriangle className="h-4 w-4 shrink-0" />
@@ -216,8 +226,8 @@ export default function Tickets() {
                   <button
                     type="button"
                     onClick={submitOrder}
-                    disabled={submitting}
-                    className="flex items-center gap-2 bg-amber px-8 py-4 font-serif font-bold tracking-widest text-jungle-950 transition-all hover:shadow-[0_0_30px_rgba(224,165,38,0.4)] disabled:cursor-wait disabled:opacity-70"
+                    disabled={submitting || !agreed}
+                    className="flex items-center gap-2 bg-amber px-8 py-4 font-serif font-bold tracking-widest text-jungle-950 transition-all hover:shadow-[0_0_30px_rgba(224,165,38,0.4)] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     {submitting ? (
                       <>
@@ -232,6 +242,11 @@ export default function Tickets() {
                     )}
                   </button>
                 </div>
+                {!agreed && (
+                  <p className="font-serif text-xs text-bone/40">
+                    勾选同意《安全协议》后即可提交订单
+                  </p>
+                )}
               </div>
             )}
 
