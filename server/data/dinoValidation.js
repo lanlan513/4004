@@ -7,6 +7,8 @@ import {
   DIETS,
   ERAS,
   HEALTH_STATUSES,
+  SPEED_MAX,
+  SPEED_MIN,
 } from './dinoConstants.js';
 
 const NAME_MIN = 2;
@@ -110,6 +112,16 @@ export function validateDino(body, { partial = false } = {}) {
     const result = readNumber(source.weightT, 'weightT', '体重', { min: 0.001, max: 100 });
     if (result.error) errors.weightT = result.error;
     else out.weightT = result.value;
+  }
+
+  // 奔跑 / 飞行速度（公里/小时）
+  if ('speedKmh' in source || !partial) {
+    const result = readNumber(source.speedKmh, 'speedKmh', '速度', {
+      min: SPEED_MIN,
+      max: SPEED_MAX,
+    });
+    if (result.error) errors.speedKmh = result.error;
+    else out.speedKmh = result.value;
   }
 
   return { ok: Object.keys(errors).length === 0, data: out, errors };

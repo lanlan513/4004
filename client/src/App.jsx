@@ -5,6 +5,8 @@ import Dinosaurs from './pages/Dinosaurs';
 import Tours from './pages/Tours';
 import Tickets from './pages/Tickets';
 import Admin from './pages/Admin';
+import Favorites from './pages/Favorites';
+import Compare from './pages/Compare';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -15,6 +17,8 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/dinosaurs" element={<Dinosaurs />} />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/compare" element={<Compare />} />
           <Route path="/tours" element={<Tours />} />
           <Route path="/tickets" element={<Tickets />} />
           <Route path="/admin" element={<Admin />} />

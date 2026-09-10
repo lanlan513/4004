@@ -36,6 +36,7 @@ const EMPTY_META = {
   sizeTiers: [],
   dangerRange: { min: 1, max: 5 },
   dangerLabels: {},
+  speedRange: { min: 0.1, max: 200 },
   nextCode: '',
 };
 

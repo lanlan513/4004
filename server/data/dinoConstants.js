@@ -55,4 +55,8 @@ export function sizeTierOf(lengthM) {
 export const ASSET_PREFIX = 'DN';
 
 // 列表接口允许的排序字段
-export const SORTABLE_FIELDS = ['dangerLevel', 'lengthM', 'weightT', 'name', 'id'];
+export const SORTABLE_FIELDS = ['dangerLevel', 'lengthM', 'weightT', 'speedKmh', 'name', 'id'];
+
+// 奔跑 / 飞行速度范围（公里/小时），供入参校验
+export const SPEED_MIN = 0.1;
+export const SPEED_MAX = 200;

@@ -1,5 +1,7 @@
 import { ArrowUp, ArrowDown, Pencil, Eye } from 'lucide-react';
 import { dangerMeta, DietBadge, HealthDot, formatWeight } from './dinoDisplay';
+import FavoriteButton from './FavoriteButton';
+import CompareCheckbox from './CompareCheckbox';
 
 // 可排序表头
 function SortableTh({ field, label, sortBy, order, onSort, className = '' }) {
@@ -24,9 +26,14 @@ function SortableTh({ field, label, sortBy, order, onSort, className = '' }) {
 export default function DinoTable({ dinosaurs, sortBy, order, onSort, onOpen, onEdit }) {
   return (
     <div className="overflow-x-auto border border-bone/10 bg-jungle-900/60">
-      <table className="w-full min-w-[920px] border-collapse text-left">
+      <table className="w-full min-w-[1000px] border-collapse text-left">
         <thead className="border-b border-bone/15 bg-jungle-950/70">
           <tr>
+            <th className="w-12 px-3 py-3" aria-label="加入对比">
+              <span className="block text-center font-serif text-[10px] tracking-widest text-bone/40">
+                对比
+              </span>
+            </th>
             <th className="px-4 py-3 font-serif text-xs tracking-widest text-bone/55">资产编号</th>
             <th className="px-4 py-3 font-serif text-xs tracking-widest text-bone/55">名称</th>
             <th className="px-4 py-3 font-serif text-xs tracking-widest text-bone/55">种类</th>
@@ -53,6 +60,13 @@ export default function DinoTable({ dinosaurs, sortBy, order, onSort, onOpen, on
               order={order}
               onSort={onSort}
             />
+            <SortableTh
+              field="speedKmh"
+              label="速度(km/h)"
+              sortBy={sortBy}
+              order={order}
+              onSort={onSort}
+            />
             <th className="px-4 py-3 font-serif text-xs tracking-widest text-bone/55">健康状态</th>
             <th className="px-4 py-3 font-serif text-xs tracking-widest text-bone/55">资产状态</th>
             <th className="px-4 py-3 font-serif text-xs tracking-widest text-bone/55">栖息区域</th>
@@ -69,6 +83,11 @@ export default function DinoTable({ dinosaurs, sortBy, order, onSort, onOpen, on
                 onClick={() => onOpen(dino)}
                 className="cursor-pointer border-b border-bone/5 transition-colors last:border-0 hover:bg-amber/5 focus-visible:bg-amber/5 focus-visible:outline-none"
               >
+                <td className="px-3 py-3" onClick={(event) => event.stopPropagation()}>
+                  <span className="flex justify-center">
+                    <CompareCheckbox dino={dino} />
+                  </span>
+                </td>
                 <td className="px-4 py-3 font-display text-xs tracking-widest text-bone/45">
                   {dino.code}
                 </td>
@@ -90,6 +109,7 @@ export default function DinoTable({ dinosaurs, sortBy, order, onSort, onOpen, on
                 <td className="px-4 py-3 font-serif text-sm text-bone/75">
                   {formatWeight(dino.weightT)}
                 </td>
+                <td className="px-4 py-3 font-serif text-sm text-bone/85">{dino.speedKmh}</td>
                 <td className="px-4 py-3">
                   <HealthDot status={dino.healthStatus} />
                 </td>
@@ -97,6 +117,12 @@ export default function DinoTable({ dinosaurs, sortBy, order, onSort, onOpen, on
                 <td className="px-4 py-3 font-serif text-sm text-bone/70">{dino.habitat}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-2">
+                    <span onClick={(event) => event.stopPropagation()}>
+                      <FavoriteButton
+                        dino={dino}
+                        className="border border-bone/15 p-1.5 hover:border-red-400/60"
+                      />
+                    </span>
                     <button
                       type="button"
                       aria-label={`查看 ${dino.name}`}

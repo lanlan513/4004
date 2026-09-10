@@ -10,6 +10,7 @@ const EMPTY_FORM = {
   dangerLevel: 3,
   lengthM: '',
   weightT: '',
+  speedKmh: '',
   healthStatus: '',
   status: '',
   habitat: '',
@@ -31,6 +32,7 @@ export function formFromDino(dino) {
     dangerLevel: dino.dangerLevel ?? 3,
     lengthM: numberFromDino(dino.lengthM),
     weightT: numberFromDino(dino.weightT),
+    speedKmh: numberFromDino(dino.speedKmh),
     healthStatus: dino.healthStatus ?? '',
     status: dino.status ?? '',
     habitat: dino.habitat ?? '',
@@ -108,6 +110,7 @@ export default function DinoFormModal({ mode, initial, meta, error, saving, onCl
     }
     if (!(Number(form.lengthM) > 0)) next.lengthM = '体长需为大于 0 的数字';
     if (!(Number(form.weightT) > 0)) next.weightT = '体重需为大于 0 的数字';
+    if (!(Number(form.speedKmh) > 0)) next.speedKmh = '速度需为大于 0 的数字';
     if (form.habitat.trim().length < 2) next.habitat = '请填写栖息区域';
     if (form.description.trim().length < 4) next.description = '请填写至少 4 个字的档案描述';
     setErrors(next);
@@ -122,6 +125,7 @@ export default function DinoFormModal({ mode, initial, meta, error, saving, onCl
       dangerLevel: Number(form.dangerLevel),
       lengthM: Number(form.lengthM),
       weightT: Number(form.weightT),
+      speedKmh: Number(form.speedKmh),
     });
   }
 
@@ -238,6 +242,26 @@ export default function DinoFormModal({ mode, initial, meta, error, saving, onCl
                 onChange={(e) => update('weightT', e.target.value)}
               />
             </Field>
+            <Field
+              label="速度（公里/小时）"
+              required
+              hint={`${meta.speedRange?.min ?? 0.1} ~ ${meta.speedRange?.max ?? 200}`}
+              error={errors.speedKmh}
+            >
+              <input
+                type="number"
+                step="0.1"
+                min={meta.speedRange?.min ?? 0.1}
+                max={meta.speedRange?.max ?? 200}
+                className={fieldClass}
+                value={form.speedKmh}
+                placeholder="例如：27"
+                onChange={(e) => update('speedKmh', e.target.value)}
+              />
+            </Field>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
             <Field label="栖息区域" required error={errors.habitat}>
               <input
                 className={fieldClass}

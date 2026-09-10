@@ -66,6 +66,7 @@ export default function DinoFilterBar({
               <option value="dangerLevel">危险等级</option>
               <option value="lengthM">体长</option>
               <option value="weightT">体重</option>
+              <option value="speedKmh">速度</option>
               <option value="name">名称</option>
             </select>
           </label>

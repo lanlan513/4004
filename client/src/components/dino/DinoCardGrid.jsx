@@ -1,8 +1,10 @@
 import { MapPin, Pencil } from 'lucide-react';
 import { DangerBadge, DangerPips, DietBadge, HealthDot, formatWeight } from './dinoDisplay';
+import FavoriteButton from './FavoriteButton';
+import CompareCheckbox from './CompareCheckbox';
 
 // 卡片图鉴：悬停高亮 + 点击查看详情
-export default function DinoCardGrid({ dinosaurs, onOpen, onEdit }) {
+export default function DinoCardGrid({ dinosaurs, onOpen, onEdit, editable = true }) {
   return (
     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
       {dinosaurs.map((dino) => (
@@ -75,22 +77,35 @@ export default function DinoCardGrid({ dinosaurs, onOpen, onEdit }) {
             </div>
           </dl>
 
-          <div className="mt-5 flex items-center justify-between border-t border-bone/10 pt-4">
+          <div className="mt-5 flex items-center justify-between gap-2 border-t border-bone/10 pt-4">
             <span className="inline-flex items-center gap-1.5 font-serif text-xs text-bone/50">
               <MapPin className="h-3.5 w-3.5" />
               {dino.habitat}
             </span>
-            <button
-              type="button"
-              aria-label={`修改 ${dino.name} 档案`}
-              onClick={(event) => {
-                event.stopPropagation();
-                onEdit(dino);
-              }}
-              className="border border-bone/15 p-1.5 text-bone/50 opacity-0 transition-all hover:border-amber/60 hover:text-amber group-hover:opacity-100 group-focus-within:opacity-100"
-            >
-              <Pencil className="h-4 w-4" />
-            </button>
+            {/* 收藏 / 对比 / 修改：均阻止冒泡，避免触发卡片点击 */}
+            <div className="flex items-center gap-1.5">
+              <label className="inline-flex cursor-pointer items-center gap-1 border border-bone/15 py-1.5 pl-1.5 pr-2 font-serif text-[10px] tracking-widest text-bone/55 transition-colors hover:border-amber/60 hover:text-amber">
+                <CompareCheckbox dino={dino} />
+                对比
+              </label>
+              <FavoriteButton
+                dino={dino}
+                className="border border-bone/15 p-1.5 hover:border-red-400/60"
+              />
+              {editable && (
+                <button
+                  type="button"
+                  aria-label={`修改 ${dino.name} 档案`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onEdit(dino);
+                  }}
+                  className="border border-bone/15 p-1.5 text-bone/50 opacity-0 transition-all hover:border-amber/60 hover:text-amber group-hover:opacity-100 group-focus-within:opacity-100"
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           </div>
         </article>
       ))}

@@ -35,6 +35,11 @@ export function createDino(body) {
   return request('/api/dinosaurs', { method: 'POST', body: JSON.stringify(body) });
 }
 
+// 详情：供收藏夹 / 对比页按 id 取完整档案
+export function fetchDinoById(id) {
+  return request(`/api/dinosaurs/${id}`);
+}
+
 export function updateDino(id, body) {
   return request(`/api/dinosaurs/${id}`, {
     method: 'PUT',

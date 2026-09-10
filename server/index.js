@@ -11,6 +11,8 @@ import {
   HEALTH_STATUSES,
   SIZE_TIERS,
   SORTABLE_FIELDS,
+  SPEED_MAX,
+  SPEED_MIN,
 } from './data/dinoConstants.js';
 import { validateDino } from './data/dinoValidation.js';
 import {
@@ -61,6 +63,7 @@ app.get('/api/dinosaurs/meta', (_req, res) => {
     sizeTiers: SIZE_TIERS,
     dangerRange: { min: DANGER_MIN, max: DANGER_MAX },
     dangerLabels: DANGER_LABELS,
+    speedRange: { min: SPEED_MIN, max: SPEED_MAX },
     nextCode: nextAssetCode(),
   });
 });

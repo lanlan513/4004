@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
-import { X, Pencil, Trash2, MapPin, Clock, Dna, Ruler, Weight } from 'lucide-react';
+import { X, Pencil, Trash2, MapPin, Clock, Dna, Ruler, Weight, Gauge, Check } from 'lucide-react';
 import { DangerBadge, DangerPips, DietBadge, HealthDot, formatWeight } from './dinoDisplay';
+import FavoriteButton from './FavoriteButton';
+import { useCompare } from '../../state/CompareContext';
 
-// 恐龙详情弹窗：点击遮罩或按 Esc 关闭
 export default function DinoDetailModal({ dino, onClose, onEdit, onDelete }) {
+  const { isComparing, toggleCompare, atLimit } = useCompare();
+
   useEffect(() => {
     const onKey = (event) => {
       if (event.key === 'Escape') onClose();
@@ -67,6 +70,11 @@ export default function DinoDetailModal({ dino, onClose, onEdit, onDelete }) {
             <DetailItem icon={<Dna className="h-4 w-4" />} label="种类" value={dino.category} />
             <DetailItem icon={<Ruler className="h-4 w-4" />} label="体长" value={`${dino.lengthM} 米`} />
             <DetailItem icon={<Weight className="h-4 w-4" />} label="体重" value={formatWeight(dino.weightT)} />
+            <DetailItem
+              icon={<Gauge className="h-4 w-4" />}
+              label="奔跑/飞行速度"
+              value={`${dino.speedKmh} 公里/小时`}
+            />
             <DetailItem icon={<MapPin className="h-4 w-4" />} label="栖息区域" value={dino.habitat} />
             <DetailItem label="资产状态" value={dino.status} />
           </dl>
@@ -76,23 +84,37 @@ export default function DinoDetailModal({ dino, onClose, onEdit, onDelete }) {
               <HealthDot status={dino.healthStatus} />
               <DangerPips level={dino.dangerLevel} />
             </div>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => onEdit(dino)}
-                className="inline-flex items-center gap-2 border border-amber/60 px-4 py-2 font-serif text-sm tracking-widest text-amber transition-colors hover:bg-amber hover:text-jungle-950"
-              >
-                <Pencil className="h-4 w-4" />
-                修改
-              </button>
-              <button
-                type="button"
-                onClick={() => onDelete(dino)}
-                className="inline-flex items-center gap-2 border border-red-500/50 px-4 py-2 font-serif text-sm tracking-widest text-red-300 transition-colors hover:bg-red-500 hover:text-bone"
-              >
-                <Trash2 className="h-4 w-4" />
-                注销
-              </button>
+            <div className="flex flex-wrap gap-3">
+              <CompareToggleButton
+                active={isComparing(dino.id)}
+                disabled={!isComparing(dino.id) && atLimit}
+                onClick={() => toggleCompare(dino.id)}
+              />
+              <FavoriteButton
+                dino={dino}
+                withLabel
+                className="border border-bone/25 px-4 py-2 font-serif text-sm tracking-widest hover:border-red-400/60"
+              />
+              {onEdit && (
+                <button
+                  type="button"
+                  onClick={() => onEdit(dino)}
+                  className="inline-flex items-center gap-2 border border-amber/60 px-4 py-2 font-serif text-sm tracking-widest text-amber transition-colors hover:bg-amber hover:text-jungle-950"
+                >
+                  <Pencil className="h-4 w-4" />
+                  修改
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  type="button"
+                  onClick={() => onDelete(dino)}
+                  className="inline-flex items-center gap-2 border border-red-500/50 px-4 py-2 font-serif text-sm tracking-widest text-red-300 transition-colors hover:bg-red-500 hover:text-bone"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  注销
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -110,5 +132,25 @@ function DetailItem({ icon, label, value }) {
       </dt>
       <dd className="mt-1 text-bone/90">{value}</dd>
     </div>
+  );
+}
+
+function CompareToggleButton({ active, disabled, onClick }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      disabled={disabled}
+      onClick={onClick}
+      title={disabled ? '最多同时对比 3 只恐龙' : active ? '从对比篮移除' : '加入对比'}
+      className={`inline-flex items-center gap-2 border px-4 py-2 font-serif text-sm tracking-widest transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+        active
+          ? 'border-amber bg-amber text-jungle-950 hover:bg-amber-light'
+          : 'border-bone/25 text-bone/80 hover:border-amber/70 hover:text-amber'
+      }`}
+    >
+      <Check className="h-4 w-4" />
+      {active ? '已加入对比' : '加入对比'}
+    </button>
   );
 }
