@@ -19,7 +19,18 @@ function loadHistory() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     const list = raw ? JSON.parse(raw) : [];
-    return Array.isArray(list) && list.length > 0 ? list : [WELCOME];
+    const valid = Array.isArray(list)
+      ? list.filter(
+          (message) =>
+            message &&
+            (message.role === 'user' || message.role === 'assistant') &&
+            typeof message.content === 'string'
+        )
+      : [];
+    while (valid.length > 1 && valid.at(-1).role === 'assistant' && !valid.at(-1).content.trim()) {
+      valid.pop();
+    }
+    return valid.length > 0 ? valid : [WELCOME];
   } catch {
     return [WELCOME];
   }
@@ -116,6 +127,7 @@ export default function ChatTerminal() {
       }
     } finally {
       setStreaming(false);
+      abortRef.current = null;
     }
   }
 
@@ -132,7 +144,10 @@ export default function ChatTerminal() {
   }
 
   function clearHistory() {
+    abortRef.current?.abort();
+    abortRef.current = null;
     setMessages([WELCOME]);
+    setStreaming(false);
     localStorage.removeItem(STORAGE_KEY);
   }
 
@@ -159,7 +174,7 @@ export default function ChatTerminal() {
 
       {/* 悬浮终端窗口 */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 flex h-[32rem] w-[22rem] flex-col overflow-hidden rounded-lg border border-emerald-500/50 bg-black font-mono text-emerald-400 shadow-[0_0_40px_rgba(16,185,129,0.35)] sm:w-[26rem]">
+        <div className="fixed bottom-24 right-3 z-50 flex h-[32rem] w-[calc(100vw-1.5rem)] max-w-[26rem] flex-col overflow-hidden rounded-lg border border-emerald-500/50 bg-black font-mono text-emerald-400 shadow-[0_0_40px_rgba(16,185,129,0.35)] sm:right-6 sm:w-[26rem]">
           {/* CRT 扫描线覆盖层 */}
           <div className="crt-overlay" aria-hidden="true" />
 
@@ -177,6 +192,7 @@ export default function ChatTerminal() {
                 type="button"
                 onClick={clearHistory}
                 title="清除历史记录"
+                disabled={streaming}
                 className="rounded border border-emerald-700 px-1.5 py-0.5 text-[10px] text-emerald-500 transition hover:border-emerald-400 hover:text-emerald-300"
               >
                 清空

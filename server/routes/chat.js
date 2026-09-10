@@ -39,6 +39,7 @@ function sanitizeMessages(input) {
 }
 
 function sseWrite(res, payload) {
+  if (res.writableEnded || res.destroyed) return;
   res.write(`data: ${JSON.stringify(payload)}\n\n`);
 }
 
@@ -98,22 +99,25 @@ function buildOfflineReply(question) {
   ].join('\n');
 }
 
-async function streamOfflineReply(res, question) {
+async function streamOfflineReply(res, question, signal) {
   const text = buildOfflineReply(question);
   // 按小片段推送，模拟打字机流式效果
   const chunks = text.match(/[\s\S]{1,6}/g) || [];
   for (const chunk of chunks) {
+    if (signal.aborted) return;
     sseWrite(res, { type: 'delta', content: chunk });
     await new Promise((r) => setTimeout(r, 24));
   }
+  if (signal.aborted) return;
   sseWrite(res, { type: 'done' });
   res.end();
 }
 
 // ---------- 大模型流式转发 ----------
-async function streamFromLLM(res, messages) {
+async function streamFromLLM(res, messages, signal) {
   const upstream = await fetch(`${LLM_BASE_URL}/chat/completions`, {
     method: 'POST',
+    signal,
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${LLM_API_KEY}`,
@@ -136,6 +140,7 @@ async function streamFromLLM(res, messages) {
   let buffer = '';
 
   for (;;) {
+    if (signal.aborted) return;
     const { done, value } = await reader.read();
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
@@ -158,6 +163,7 @@ async function streamFromLLM(res, messages) {
     }
   }
 
+  if (signal.aborted) return;
   sseWrite(res, { type: 'done' });
   res.end();
 }
@@ -167,7 +173,7 @@ router.post('/chat', async (req, res) => {
   const messages = sanitizeMessages(req.body?.messages);
   const lastUser = [...messages].reverse().find((m) => m.role === 'user');
 
-  if (!lastUser) {
+  if (!lastUser || !lastUser.content.trim()) {
     return res.status(400).json({ code: 400, message: '消息列表不能为空', data: null });
   }
 
@@ -181,20 +187,20 @@ router.post('/chat', async (req, res) => {
   res.flushHeaders();
 
   // 客户端断开时停止输出
-  let aborted = false;
-  req.on('close', () => {
-    aborted = true;
+  const controller = new AbortController();
+  res.on('close', () => {
+    if (!res.writableFinished) controller.abort();
   });
 
   try {
     if (LLM_API_KEY) {
-      await streamFromLLM(res, messages);
+      await streamFromLLM(res, messages, controller.signal);
     } else {
-      await streamOfflineReply(res, lastUser.content);
+      await streamOfflineReply(res, lastUser.content, controller.signal);
     }
   } catch (err) {
     console.error('聊天接口错误:', err.message);
-    if (!aborted && !res.writableEnded) {
+    if (!controller.signal.aborted && !res.writableEnded) {
       sseWrite(res, { type: 'error', message: `通讯故障：${err.message}` });
       res.end();
     }
