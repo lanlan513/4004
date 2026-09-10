@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dinosaurs from './data/dinosaurs.js';
+import chatRouter from './routes/chat.js';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+// 端口优先级：环境变量 API_PORT（根目录 .env）> PORT > 默认 5000
+const PORT = process.env.API_PORT || process.env.PORT || 5000;
 
 // 中间件
 app.use(cors());
@@ -58,6 +60,9 @@ app.get('/api/dinosaurs/:id', (req, res) => {
 
   res.json({ code: 0, message: 'success', data: dino });
 });
+
+// AI 古生物专家终端（SSE 流式对话）
+app.use('/api', chatRouter);
 
 // 兜底 404
 app.use((_req, res) => {
