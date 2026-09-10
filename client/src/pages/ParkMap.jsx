@@ -174,13 +174,18 @@ export default function ParkMap() {
             selectedZoneId={selectedZoneId}
             onSelectZone={(id) => setSelectedZoneId(id === selectedZoneId ? null : id)}
           />
-          {/* 图例 */}
-          <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-bone/10 px-5 py-3 font-serif text-xs text-bone/60">
-            <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-emerald-400" />电网通电</span>
-            <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-bone/40" />电网断电</span>
-            <span className="flex items-center gap-2"><span className="h-2 w-2 animate-pulse rounded-full bg-red-400" />电网故障</span>
-            <span className="flex items-center gap-2"><span className="inline-block h-2.5 w-2.5 rotate-45 bg-red-500" />肉食恐龙</span>
-            <span className="flex items-center gap-2"><span className="inline-block h-2.5 w-2.5 rotate-45 bg-emerald-400" />植食恐龙</span>
+          {/* 图例：悬浮于地图右下角，不占用布局空间 */}
+          <div className="pointer-events-none absolute bottom-3 right-3 z-10 border border-bone/15 bg-jungle-950/80 px-3.5 py-2.5 backdrop-blur-sm">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 font-serif text-[11px] text-bone/65">
+              <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />电网通电</span>
+              <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-bone/40" />电网断电</span>
+              <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-400" />电网故障</span>
+            </div>
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-bone/10 pt-1.5 font-serif text-[11px] text-bone/65">
+              <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rotate-45 bg-red-500" />霸王龙</span>
+              <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rotate-45 bg-[#f59e0b]" />迅猛龙</span>
+              <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rotate-45 bg-emerald-400" />植食恐龙</span>
+            </div>
           </div>
         </div>
 
