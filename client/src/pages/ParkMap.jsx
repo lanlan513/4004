@@ -4,7 +4,7 @@ import {
   Eye, HeartPulse, AlertTriangle, Radio, X,
 } from 'lucide-react';
 import PageFrame from './PageFrame';
-import ParkMapCanvas from '../components/ParkMapCanvas';
+import ParkMapCanvas, { DINO_COLORS } from '../components/ParkMapCanvas';
 
 const FENCE_LABEL = { on: '通电', off: '断电', fault: '故障' };
 const FENCE_STYLE = {
@@ -182,9 +182,12 @@ export default function ParkMap() {
               <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-400" />电网故障</span>
             </div>
             <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-bone/10 pt-1.5 font-serif text-[11px] text-bone/65">
-              <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rotate-45 bg-red-500" />霸王龙</span>
-              <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rotate-45 bg-[#f59e0b]" />迅猛龙</span>
-              <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rotate-45 bg-emerald-400" />植食恐龙</span>
+              {Object.entries(DINO_COLORS).map(([species, color]) => (
+                <span key={species} className="flex items-center gap-1.5">
+                  <span className="inline-block h-2 w-2 rotate-45" style={{ backgroundColor: color }} />
+                  {species}
+                </span>
+              ))}
             </div>
           </div>
         </div>

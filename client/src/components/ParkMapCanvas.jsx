@@ -37,8 +37,15 @@ const PALETTES = {
 };
 
 const FENCE_COLORS = { on: '#34d399', off: '#8b938c', fault: '#f87171' };
-const DINO_COLORS = { 霸王龙: '#ef4444', 迅猛龙: '#f59e0b' };
-const HERBIVORE_COLOR = '#4ade80';
+// 每个追踪物种一种标记色：肉食为暖色，植食为冷色（导出供图例复用，保持单一数据源）
+export const DINO_COLORS = {
+  霸王龙: '#ef4444',
+  迅猛龙: '#f59e0b',
+  腕龙: '#34d399',
+  三角龙: '#38bdf8',
+  剑龙: '#a3e635',
+};
+const DEFAULT_DINO_COLOR = '#4ade80';
 
 function pointInPolygon(x, y, polygon) {
   let inside = false;
@@ -210,7 +217,7 @@ export default function ParkMapCanvas({ zones, dinos, mode, selectedZoneId, onSe
         pos.x += (dino.x - pos.x) * 0.06;
         pos.y += (dino.y - pos.y) * 0.06;
 
-        const color = DINO_COLORS[dino.species] ?? HERBIVORE_COLOR;
+        const color = DINO_COLORS[dino.species] ?? DEFAULT_DINO_COLOR;
         // 脉冲光环
         const pulse = (now / 900 + dino.id.charCodeAt(0)) % 1;
         ctx.save();
