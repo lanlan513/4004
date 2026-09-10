@@ -54,6 +54,27 @@ export default {
           '0%, 100%': { transform: 'translateY(0)', opacity: '0.9' },
           '50%': { transform: 'translateY(8px)', opacity: '0.4' },
         },
+        // 一级警报：红黑全屏闪烁
+        emergencyFlash: {
+          '0%, 44%': { backgroundColor: 'rgba(120, 0, 0, 0.88)' },
+          '45%, 55%': { backgroundColor: 'rgba(255, 26, 26, 0.28)' },
+          '56%, 100%': { backgroundColor: 'rgba(8, 0, 0, 0.92)' },
+        },
+        // 警报角标急闪
+        sirenBlink: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.25' },
+        },
+        // 雷达扫描环
+        radarPing: {
+          '0%': { transform: 'scale(0.6)', opacity: '0.9' },
+          '100%': { transform: 'scale(2.4)', opacity: '0' },
+        },
+        // 指针抖动（危险等级跳变）
+        needleJitter: {
+          '0%, 100%': { transform: 'rotate(var(--tw-rotate, 0deg))' },
+          '50%': { transform: 'rotate(0.6deg)' },
+        },
       },
       animation: {
         fog: 'fogDrift 18s ease-in-out infinite',
@@ -62,6 +83,9 @@ export default {
         'fade-up': 'fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards',
         'glow-pulse': 'glowPulse 3s ease-in-out infinite',
         'bounce-slow': 'bounceSlow 2s ease-in-out infinite',
+        'emergency-flash': 'emergencyFlash 1.1s steps(1, end) infinite',
+        'siren-blink': 'sirenBlink 0.55s steps(1, end) infinite',
+        'radar-ping': 'radarPing 2.4s ease-out infinite',
       },
     },
   },

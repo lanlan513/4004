@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Ticket } from 'lucide-react';
+import { Menu, X, Ticket, Siren } from 'lucide-react';
+import { useEmergency } from '../emergency/EmergencyContext';
 
 const NAV_LINKS = [
   { label: '首页', href: '/' },
@@ -26,6 +27,8 @@ function ClawMark({ className = '' }) {
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { level, levelMeta } = useEmergency();
+  const isAlert = level !== 'NORMAL';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -72,6 +75,21 @@ export default function Navbar() {
           ))}
         </ul>
 
+        {/* 应急指挥入口：随全局警报等级变色急闪 */}
+        <Link
+          to="/security"
+          title="紧急预警与防御响应"
+          className={`ml-4 hidden items-center gap-2 border px-4 py-2 font-serif text-xs tracking-[0.2em] transition-all duration-300 md:inline-flex ${
+            isAlert
+              ? 'animate-siren-blink border-red-500 bg-red-600/20 text-red-200 hover:bg-red-600 hover:text-white'
+              : 'border-red-500/40 text-red-300/90 hover:border-red-500 hover:bg-red-500/10'
+          }`}
+        >
+          <Siren className="h-4 w-4" style={isAlert ? undefined : { color: levelMeta.color }} />
+          应急指挥
+          <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: levelMeta.color }} />
+        </Link>
+
         {/* 预约按钮 */}
         <Link
           to="/tickets"
@@ -110,6 +128,20 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          <li className="pt-2">
+            <Link
+              to="/security"
+              onClick={() => setMenuOpen(false)}
+              className={`flex w-full items-center gap-3 border px-5 py-3 font-serif tracking-widest ${
+                isAlert
+                  ? 'animate-siren-blink border-red-500 bg-red-600/20 text-red-200'
+                  : 'border-red-500/40 text-red-300/90'
+              }`}
+            >
+              <Siren className="h-4 w-4" />
+              应急指挥 · {levelMeta.label}
+            </Link>
+          </li>
           <li className="pt-2">
             <Link
               to="/tickets"

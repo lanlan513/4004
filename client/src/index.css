@@ -53,4 +53,37 @@
       0 0 30px rgba(224, 165, 38, 0.35),
       0 2px 12px rgba(0, 0, 0, 0.8);
   }
+
+  /* CRT 扫描线：警报界面与监控面板质感 */
+  .scanlines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0px,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, 0.28) 3px,
+      rgba(0, 0, 0, 0.28) 4px
+    );
+  }
+
+  /* 一级警报文字：红色辉光 + 轻微抖动 */
+  .alert-glow {
+    text-shadow:
+      0 0 18px rgba(255, 40, 40, 0.9),
+      0 0 60px rgba(255, 0, 0, 0.55);
+  }
+
+  /* 警戒斜纹条 */
+  .hazard-stripes {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      #e0a526 0,
+      #e0a526 14px,
+      #160b02 14px,
+      #160b02 28px
+    );
+  }
 }

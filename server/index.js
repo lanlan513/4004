@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dinosaurs from './data/dinosaurs.js';
+import { zones, randomIncident } from './data/security.js';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+// 端口优先级：环境变量 API_PORT（根目录 .env）> PORT > 默认 5000
+const PORT = process.env.API_PORT || process.env.PORT || 5000;
 
 // 中间件
 app.use(cors());
@@ -57,6 +59,16 @@ app.get('/api/dinosaurs/:id', (req, res) => {
   }
 
   res.json({ code: 0, message: 'success', data: dino });
+});
+
+// 应急指挥：安全展区列表
+app.get('/api/security/zones', (_req, res) => {
+  res.json({ code: 0, message: 'success', data: zones, total: zones.length });
+});
+
+// 应急指挥：模拟突发事件（每次请求随机返回一起，供客户端轮询/抽样）
+app.get('/api/security/incidents/random', (_req, res) => {
+  res.json({ code: 0, message: 'success', data: randomIncident() });
 });
 
 // 兜底 404
